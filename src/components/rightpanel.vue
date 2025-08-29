@@ -42,35 +42,18 @@
       </button>
     </div>
 
-    <!-- Time line de consultas -->
-    <div class="space-y-6">
-      <div class="flex">
+    <!-- Time line de consultas dinámica -->
+    <div class="space-y-6" style="max-height: 43vh; overflow-y: auto">
+      <div class="flex" v-for="consulta in consultasPaciente" :key="consulta.consultaId">
         <div class="items-center mr-4 flex flex-col">
           <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-          <div class="w-0.5 h-16 bg-gray-200 mt-2"></div>
+          <div class="w-0.5 h-16 bg-gray-200 mt-2" v-if="consulta !== consultasPaciente[consultasPaciente.length - 1]"></div>
         </div>
         <div class="flex-1">
-          <div class="text-sm font-medium text-gray-900">06/06/25 14:29 • Náusea y vómito</div>
-          <div class="text-sm text-gray-600">Líquidos, dipirona. Pautas de alarma.</div>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="items-center mr-4 flex flex-col">
-          <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-          <div class="w-0.5 h-16 bg-gray-200 mt-2"></div>
-        </div>
-        <div class="flex-1">
-          <div class="text-sm font-medium text-gray-900">17/04/25 15:11 • Consulta NE</div>
-          <div class="text-sm text-gray-600">Ausente a control.</div>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="items-center mr-4 flex flex-col">
-          <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-        </div>
-        <div class="flex-1">
-          <div class="text-sm font-medium text-gray-900">13/08/24 18:41 • Enteritis</div>
-          <div class="text-sm text-gray-600">3 días de vómitos; diarrea.</div>
+          <div class="text-sm font-medium text-gray-900">
+            {{ $formatDateTime(consulta.fecha) }} • {{ consulta.diagnosticos?.[0]?.nombre || 'Sin diagnóstico' }}
+          </div>
+          <div class="text-sm text-gray-600">{{ consulta.evolucion }}</div>
         </div>
       </div>
     </div>
@@ -107,7 +90,7 @@ function traerInformacionPaciente(registroId, institucionId) {
       console.log('Información del paciente: ', informacionPaciente.value)
 
       //Todas las consultas
-      consultasPaciente.value = resultado.data.consultas
+      consultasPaciente.value = resultado.data.result
       console.log('Consultas del paciente: ', consultasPaciente.value)
       IsLoading.value = false
     })
