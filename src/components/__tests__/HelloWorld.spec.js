@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest'
-
 import { mount } from '@vue/test-utils'
-import HelloWorld from '../HelloWorld.vue'
+import PatientSideBar from '../Guardia/PatientSideBar.vue'
 
-describe('HelloWorld', () => {
-  it('renders properly', () => {
-    const wrapper = mount(HelloWorld, { props: { msg: 'Hello Vitest' } })
-    expect(wrapper.text()).toContain('Hello Vitest')
+describe('PatientSideBar', () => {
+  it('renders correctly', () => {
+    const wrapper = mount(PatientSideBar)
+    expect(wrapper.exists()).toBe(true)
   })
 })
