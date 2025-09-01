@@ -68,6 +68,8 @@ import { ref, Transition, watch } from 'vue'
 import Spinner from '@/components/Spinner.vue'
 
 let informacionPaciente = ref(null)
+// let registroId = 1718482
+// let institucionId = null
 let consultasPaciente = ref([])
 let IsLoading = ref(false)
 
@@ -116,3 +118,21 @@ watch(() => props.registroId, () => {
   traerInformacionPaciente()
 })
 </script>
+
+
+<!-- <style scoped>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(40px);
+}
+.slide-fade-enter-to,
+.slide-fade-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+</style> -->
