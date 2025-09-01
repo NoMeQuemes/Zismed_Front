@@ -16,14 +16,14 @@
               <td class="py-4">{{ item.prestadorRecibe.trim() }}</td>
               <td class="py-4">{{ item.estado == null ? 'Sin Estado' : item.estado }}</td>
               <td class="py-4">
-                <button class="bg-blue-500 text-white px-2 py-1 rounded" @click="selectPatient(item.guardiaRegistroID); mostrarRightPanel(true)">Atender</button>
+                <button class="bg-green-500 text-white px-2 py-1 rounded" @click="selectPatient(item.guardiaRegistroID)">Atender</button>
               </td>
             </tr>
           </template>
         </PatientSearch>
 
           
-        <RightPanel :registroId="selectedRegistroId" />
+        <RightPanel :registroId="selectedRegistroId" :mostrar="IsShowRightPanel"/>
 
       </div>
     </div>
@@ -44,7 +44,7 @@ let evolucionPaciente = ref({})
 let registroId = 1718482
 let institucionId = null
 let selectedRegistroId = ref(0)
-let IsShow = ref(false)
+let IsShowRightPanel = ref(false)
 
 onMounted(() => {
   listarPacientes(38)
@@ -64,10 +64,10 @@ function listarPacientes(id) {
 
 function selectPatient(id) {
   selectedRegistroId.value = id
-}
-
-function mostrarRightPanel(valor){
-  IsShow.value = valor
+  if(!IsShowRightPanel.value)
+  {
+    IsShowRightPanel.value = true
+  }
 }
 </script>
 
