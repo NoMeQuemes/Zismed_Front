@@ -10,19 +10,21 @@
         >
           <template #row="{ item, index }">
             <tr>
-              <td>{{ index + 1 }}</td>
-              <td>{{ item.pacienteNombre }}</td>
-              <td>{{ item.fechaIngreso }}</td>
-              <td>{{ item.prestadorRecibe.trim() }}</td>
-              <td>{{ item.estado == null ? 'Sin Estado' : item.estado }}</td>
-              <td>
-                <button class="bg-blue-500 text-white px-2 py-1 rounded">Atender</button>
+              <td class="py-4">{{ index + 1 }}</td>
+              <td class="py-4">{{ item.pacienteNombre }}</td>
+              <td class="py-4">{{ item.fechaIngreso }}</td>
+              <td class="py-4">{{ item.prestadorRecibe.trim() }}</td>
+              <td class="py-4">{{ item.estado == null ? 'Sin Estado' : item.estado }}</td>
+              <td class="py-4">
+                <button class="bg-blue-500 text-white px-2 py-1 rounded" @click="selectPatient(item.guardiaRegistroID); mostrarRightPanel(true)">Atender</button>
               </td>
             </tr>
           </template>
         </PatientSearch>
 
-        <RightPanel />
+        
+        <RightPanel :registroId="selectedRegistroId"/>
+
       </div>
     </div>
   </div>
@@ -41,6 +43,7 @@ let consultasPaciente = ref({})
 let evolucionPaciente = ref({})
 let registroId = 1718482
 let institucionId = null
+let selectedRegistroId = ref(0)
 
 onMounted(() => {
   listarPacientes(38)
@@ -56,5 +59,9 @@ function listarPacientes(id) {
     .catch((error) => {
       console.log('Error al traer las consultas: ', error)
     })
+}
+
+function selectPatient(id) {
+  selectedRegistroId.value = id
 }
 </script>

@@ -16,7 +16,7 @@
             </th>
           </tr>
         </thead>
-        <tbody class="text-center">
+        <tbody class="text-center divide-y divide-gray-200">
           <slot name="row" v-for="(item, index) in datos" :item="item" :index="index" :key="index">
           </slot>
         </tbody>
