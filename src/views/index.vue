@@ -2,7 +2,12 @@
   <!-- <div class="bg-gray-50 font-sans"> Con este cambio se quita el modo oscuro por defecto -->
   <div class="bg-gray-50 font-sans">
     <div class="min-h-screen flex flex-col">
-      <Navigation />
+      <Navigation>
+        <template #Sector>
+          <p class="text-xl font-semibold">{{ sectorConsulta }}</p>
+          <!-- <p class="text-sm opacity-90">Ingreso, Triage y Atención</p> -->
+        </template>
+      </Navigation>
       <div class="flex flex-1">
         <PatientSearch
           :columnas="['N°', 'Paciente', 'Ingreso', 'Médico que recibe', 'Estado', 'Acciones']"
@@ -16,15 +21,19 @@
               <td class="py-4">{{ item.prestadorRecibe.trim() }}</td>
               <td class="py-4">{{ item.estado == null ? 'Sin Estado' : item.estado }}</td>
               <td class="py-4">
-                <button class="bg-green-500 text-white px-2 py-1 rounded" @click="selectPatient(item.guardiaRegistroID)">Atender</button>
+                <button
+                  class="bg-green-500 text-white px-2 py-1 rounded"
+                  @click="selectPatient(item.guardiaRegistroID)"
+                >
+                  Atender
+                </button>
               </td>
             </tr>
           </template>
         </PatientSearch>
 
-          
-        <RightPanel :registroId="selectedRegistroId" :mostrar="IsShowRightPanel"/>
-
+        <!-- Panel de información del paciente -->
+        <RightPanel :registroId="selectedRegistroId" :mostrar="IsShowRightPanel" />
       </div>
     </div>
   </div>
@@ -38,15 +47,14 @@ import { ref, onMounted } from 'vue'
 import axiosFunction from '@/Functions/axios'
 
 let listaPacientes = ref([])
-let informacionPaciente = ref(null)
-let consultasPaciente = ref({})
-let evolucionPaciente = ref({})
-let registroId = 1718482
-let institucionId = null
+let sectorConsulta = ref()
 let selectedRegistroId = ref(0)
 let IsShowRightPanel = ref(false)
 
 onMounted(() => {
+  // const pathParts = window.location.pathname.split('/').filter(Boolean)
+  // const idSectorGuardia = pathParts[pathParts.length - 1]
+  // console.log('ID del sector de guardia:', idSectorGuardia)
   listarPacientes(38)
 })
 
@@ -55,7 +63,8 @@ function listarPacientes(id) {
     .get(`Guardia/pacientePorSector/${id}`)
     .then((resultado) => {
       // console.log('Resultado de traer las consultas de un paciente: ', resultado)
-      listaPacientes.value = resultado.data.result
+      listaPacientes.value = resultado.data.result.pacientes
+      sectorConsulta.value = resultado.data.result.lugar
     })
     .catch((error) => {
       console.log('Error al traer las consultas: ', error)
@@ -64,8 +73,7 @@ function listarPacientes(id) {
 
 function selectPatient(id) {
   selectedRegistroId.value = id
-  if(!IsShowRightPanel.value)
-  {
+  if (!IsShowRightPanel.value) {
     IsShowRightPanel.value = true
   }
 }
