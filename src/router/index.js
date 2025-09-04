@@ -19,6 +19,11 @@ const router = createRouter({
       name: 'Index',
       component: index,
     },
+    {
+      path: '/CreateConsulta/:pacienteId',
+      name: 'CreateConsulta',
+      component: () => import('../views/CreateConsulta.vue'),
+    },
   ],
 })
 

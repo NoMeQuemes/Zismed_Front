@@ -7,7 +7,10 @@
         @update:isLoading="IsLoading = $event"
         class="local-spinner"
       />
-      <div class="w-96 bg-white border-l border-gray-200 p-6" v-if="!IsLoading && informacionPaciente">
+      <div
+        class="w-96 bg-white border-l border-gray-200 p-6"
+        v-if="!IsLoading && informacionPaciente"
+      >
         <div class="mb-6">
           <div class="items-center justify-between mb-2 flex">
             <span class="text-base font-bold text-gray-900">
@@ -30,12 +33,17 @@
           <div class="text-sm text-gray-600">Últ. control: 06/06/2025</div>
         </div>
         <div class="mb-8 flex gap-2">
-          <button
-            type="submit"
-            class="flex-1 hover:bg-blue-600 rounded bg-blue-500 text-white px-3 py-1 font-small"
+          <router-link
+            :to="{ name: 'CreateConsulta', params: { pacienteId: informacionPaciente.pacienteID } }"
           >
-            Evolucionar ahora
-          </button>
+            <button
+              type="submit"
+              class="flex-1 hover:bg-blue-600 rounded bg-blue-500 text-white px-3 py-1 font-small"
+              @click="evolucionarPaciente(informacionPaciente.pacienteID)"
+            >
+              Evolucionar ahora
+            </button>
+          </router-link>
           <button
             type="submit"
             class="hover:bg-gray-600 rounded bg-gray-500 text-white px-3 py-1 font-small"
@@ -43,17 +51,21 @@
             Indicaciones rápidas
           </button>
         </div>
-    
+
         <!-- Time line de consultas dinámica -->
         <div class="space-y-6" style="max-height: 43vh; overflow-y: auto">
           <div class="flex" v-for="consulta in consultasPaciente" :key="consulta.consultaId">
             <div class="items-center mr-4 flex flex-col">
               <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <div class="w-0.5 h-16 bg-gray-200 mt-2" v-if="consulta !== consultasPaciente[consultasPaciente.length - 1]"></div>
+              <div
+                class="w-0.5 h-16 bg-gray-200 mt-2"
+                v-if="consulta !== consultasPaciente[consultasPaciente.length - 1]"
+              ></div>
             </div>
             <div class="flex-1">
               <div class="text-sm font-medium text-gray-900">
-                {{ $formatDateTime(consulta.fecha) }} • {{ consulta.diagnosticos?.[0]?.nombre || 'Sin diagnóstico' }}
+                {{ $formatDateTime(consulta.fecha) }} •
+                {{ consulta.diagnosticos?.[0]?.nombre || 'Sin diagnóstico' }}
               </div>
               <div class="text-sm text-gray-600">{{ consulta.evolucion }}</div>
             </div>
@@ -79,14 +91,14 @@ const props = defineProps({
   registroId: {
     type: Number,
     required: true,
-    default: null
+    default: null,
   },
   mostrar: {
     type: Boolean,
     required: true,
-    default: false
-  }
-})  
+    default: false,
+  },
+})
 
 function traerInformacionPaciente() {
   if (!props.registroId) {
@@ -117,11 +129,13 @@ function traerInformacionPaciente() {
 }
 
 // Se usa watch para que la función se ejecute cada vez que la prop 'registroId' cambie
-watch(() => props.registroId, () => {
-  traerInformacionPaciente()
-})
+watch(
+  () => props.registroId,
+  () => {
+    traerInformacionPaciente()
+  },
+)
 </script>
-
 
 <style scoped>
 .slide-right-panel-enter-active,
