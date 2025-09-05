@@ -19,7 +19,7 @@
       <li
         v-for="diag in resultados"
         :key="diag.diagnosticosConsultasId"
-        class="list-group-item list-group-item-action"
+        class="list-group-item list-group-item-action cursor-pointer"
         @click="seleccionarDiagnostico(diag)"
       >
         <strong>{{ diag.diagnosticosConsultasId }}</strong> - {{ diag.nombre }}
@@ -49,7 +49,9 @@ export default {
 
       this.timeout = setTimeout(async () => {
         try {
-          const url = new URL('https://localhost:7296/api/Guardia/diagnosticos/search')
+          const url = new URL(
+            'http://168.226.219.57:3004/Zismed_APIs/api/Guardia/diagnosticos/search',
+          )
           url.searchParams.set('query', this.query)
           url.searchParams.set('iosep', 'false')
 
@@ -89,5 +91,13 @@ export default {
   padding: 0.4rem;
   border: 1px solid #ccc;
   border-radius: 6px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover {
+  background-color: #f0f0f0;
 }
 </style>

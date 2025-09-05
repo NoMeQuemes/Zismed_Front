@@ -2,8 +2,10 @@
   <div class="flex-1 p-6">
     <div class="mb-6">
       <input
+        :value="stringBusqueda"
+        @input="$emit('update:stringBusqueda', $event.target.value)"
         type="text"
-        placeholder="Buscar por DNI / Nombre / N° de triage"
+        placeholder="Buscar por DNI / Nombre"
         class="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full px-4 py-2 rounded-lg bg-white text-gray-900"
       />
     </div>
@@ -36,6 +38,10 @@ defineProps({
   datos: {
     type: Array,
     required: true,
+  },
+  stringBusqueda: {
+    type: String,
+    required: false,
   },
 })
 </script>

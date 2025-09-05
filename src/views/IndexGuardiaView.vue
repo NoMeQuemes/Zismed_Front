@@ -4,19 +4,32 @@
     <div class="min-h-screen flex flex-col">
       <Navigation>
         <template #Sector>
-          <p class="text-xl font-semibold">{{ sectorConsulta }}</p>
+          <p>{{ sectorConsulta }}</p>
           <!-- <p class="text-sm opacity-90">Ingreso, Triage y Atención</p> -->
+        </template>
+        <template #Subtitulo>
+          <p>Ingreso, Triage y Atención</p>
         </template>
       </Navigation>
       <div class="flex flex-1">
         <PatientSearch
-          :columnas="['N°', 'Paciente', 'Ingreso', 'Médico que recibe', 'Estado', 'Acciones']"
-          :datos="listaPacientes"
+          :columnas="[
+            'N°',
+            'Paciente',
+            'Documento',
+            'Ingreso',
+            'Médico que recibe',
+            'Estado',
+            'Acciones',
+          ]"
+          :datos="listaPacientesFiltrados"
+          v-model:stringBusqueda="stringBusqueda"
         >
           <template #row="{ item, index }">
             <tr>
               <td class="py-4">{{ index + 1 }}</td>
               <td class="py-4">{{ item.pacienteNombre }}</td>
+              <td class="py-4">{{ item.pacienteDocumento }}</td>
               <td class="py-4">{{ item.fechaIngreso }}</td>
               <td class="py-4">{{ item.prestadorRecibe.trim() }}</td>
               <td class="py-4">{{ item.estado == null ? 'Sin Estado' : item.estado }}</td>
@@ -40,16 +53,26 @@
 </template>
 
 <script setup>
-import Navigation from '@/components/navigation.vue'
-import PatientSearch from '@/components/patientsearch.vue'
-import RightPanel from '@/components/rightpanel.vue'
-import { ref, onMounted } from 'vue'
+import Navigation from '@/components/NavBar.vue'
+import PatientSearch from '@/components/PlantillaTabla.vue'
+import RightPanel from '@/components/SideBarPaciente.vue'
+import { ref, onMounted, computed } from 'vue'
 import axiosFunction from '@/Functions/axios'
 
 let listaPacientes = ref([])
 let sectorConsulta = ref()
 let selectedRegistroId = ref(0)
 let IsShowRightPanel = ref(false)
+const stringBusqueda = ref('')
+
+const listaPacientesFiltrados = computed(() => {
+  return listaPacientes.value.filter((paciente) => {
+    return (
+      paciente.pacienteNombre.toLowerCase().includes(stringBusqueda.value.toLowerCase()) ||
+      paciente.pacienteDocumento.toLowerCase().includes(stringBusqueda.value.toLowerCase())
+    )
+  })
+})
 
 onMounted(() => {
   // const pathParts = window.location.pathname.split('/').filter(Boolean)
