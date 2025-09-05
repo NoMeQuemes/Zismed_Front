@@ -55,7 +55,7 @@
 <script setup>
 import Navigation from '@/components/NavBar.vue'
 import PatientSearch from '@/components/PlantillaTabla.vue'
-import RightPanel from '@/components/SideBarPaciente.vue'
+import RightPanel from '@/components/Guardia/SideBarPaciente.vue'
 import { ref, onMounted, computed } from 'vue'
 import axiosFunction from '@/Functions/axios'
 

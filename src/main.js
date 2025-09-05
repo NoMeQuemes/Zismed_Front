@@ -8,7 +8,7 @@ import router from './router'
 import axiosFunction from './Functions/axios.js'
 
 // Funciones propias
-import { formatDate, formatDateTime } from './Functions/formatDate'
+import { formatDate, formatDateTime, calcularEdad } from './Functions/formatDate'
 const app = createApp(App)
 
 app.use(createPinia())
@@ -16,5 +16,6 @@ app.use(router)
 app.config.globalProperties.$axios = axiosFunction
 app.config.globalProperties.$formatDate = formatDate
 app.config.globalProperties.$formatDateTime = formatDateTime
+app.config.globalProperties.$calcularEdad = calcularEdad
 
 app.mount('#app')

@@ -23,7 +23,7 @@
               <span class="bg-gray-100 text-gray-800 px-2 py-1 text-xs font-medium rounded">UDI</span>
             </div> -->
           </div>
-          <div class="text-sm text-gray-600">Edad: 2 a Obra soc: OSDE Llegada: 14/08 08:1</div>
+          <div class="text-sm text-gray-600">Edad: {{ $calcularEdad(informacionPaciente.pacienteFechaNacimiento) }} a Obra soc: OSDE Llegada: 2025-09-05</div>
         </div>
         <div class="mb-6">
           <div class="mb-2 flex gap-4">
@@ -82,8 +82,6 @@ import { ref, Transition, watch } from 'vue'
 import Spinner from '@/components/Spinner.vue'
 
 let informacionPaciente = ref(null)
-// let registroId = 1718482
-// let institucionId = null
 let consultasPaciente = ref([])
 let IsLoading = ref(false)
 
@@ -97,7 +95,7 @@ const props = defineProps({
     type: Boolean,
     required: true,
     default: false,
-  },
+  }
 })
 
 function traerInformacionPaciente() {

@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import DiagnosticoSearch from '../components/DiagnosticoSearch.vue'
+import DiagnosticoSearch from '../components/Guardia/DiagnosticoSearch.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import Navigation from '@/components/NavBar.vue'
