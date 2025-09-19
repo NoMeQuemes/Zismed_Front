@@ -21,7 +21,7 @@ const router = createRouter({
       component: index,
     },
     {
-      path: '/CreateConsulta/:pacienteId/:GuardiaRegistroId',
+      path: '/CreateConsulta/:pacienteId/:prestadorId/:guardiaRegistroId',
       name: 'CreateConsulta',
       component: () => import('../views/EvolucionGuardiaView.vue'),
     },

@@ -41,7 +41,8 @@
               name: 'CreateConsulta',
               params: {
                 pacienteId: informacionPaciente.pacienteID,
-                GuardiaRegistroId: props.registroId,
+                prestadorId: informacionPaciente.prestadorID,
+                guardiaRegistroId: props.registroId,
               },
             }"
           >
