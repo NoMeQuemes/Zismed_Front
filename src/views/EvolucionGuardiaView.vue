@@ -476,7 +476,7 @@ function guardarAlta() {
   axiosFunction
     .post('/Guardia/SalidaGuardiaGral', {
       GuardiaRegistroId: guardiaRegistroId,
-      GuardiaSectorId: 35,
+      GuardiaSectorId: datosGuardiaStore.GuardiaSectorID,
       PrestadorId: prestadorId,
       Fecha: fechaDerivacion.value,
       TipoAltaID: TipoAltaID.value,
@@ -527,7 +527,7 @@ async function guardarConsulta(isAlert = false) {
       pacienteId: pacienteId,
       turnoId: null,
       guardiaRegistroId: guardiaRegistroId,
-      guardiaSectorId: null,
+      guardiaSectorId: datosGuardiaStore.GuardiaSectorID,
       interconsultaId: null,
       camaId: null,
       prestadorId: prestadorId,
@@ -598,7 +598,7 @@ const guardarIndicacionesMedicas = () => {
       idPacinete: pacienteId.value,
       idPrestadorIndica: prestadorId.value,
       guardiaRegistroId: guardiaRegistroId.value,
-      guardiaSectorId: 0,
+      guardiaSectorId: datosGuardiaStore.GuardiaSectorID,
     })
     .then((response) => {
       if (response.data.success) {
