@@ -80,24 +80,114 @@
       <button class="btn-blue" @click="guardarConsulta(true)">Guardar</button>
       <button class="btn-blue">Indicar/Recetar</button>
       <button class="btn-blue">Solicitar estudios</button>
-      <button class="btn-blue">Derivar</button>
+      <button class="btn-blue" @click="((modal = true), DerivacionInternaGet())">Derivar</button>
       <button class="btn-blue">Dar alta</button>
       <router-link :to="{ name: 'Index' }">
-        <button class="btn-red">Cerrar consulta</button>
+        <button
+          class="btn-red"
+          @click="datosGuardiaStore.LimpiarSeleccionGuardiaRegistroIdPaciente()"
+        >
+          Cerrar consulta
+        </button>
       </router-link>
     </div>
   </div>
+
+  <!-- Modal de derivación -->
+  <ModalDerivar :show="modal" @close="modal = false">
+    <h2 class="text-xl font-bold mb-4">Derivación Interna</h2>
+    <!-- <p class="mb-4">
+      Este es el contenido de tu modal. Puedes poner formularios, texto, lo que quieras.
+    </p> -->
+    <form>
+      <div class="mb-4">
+        <label class="block mb-2">Desde:</label>
+        <input
+          type="text"
+          class="w-full border p-2 rounded disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
+          :value="DerivacionInternaGET.guardiaSectorActualNombre"
+          disabled
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block mb-2">Hacia:</label>
+        <select
+          class="w-full border p-2 rounded"
+          v-model="DerivacionInternaDto.guardiaSectorHastaId"
+        >
+          <option>Seleccione un sector</option>
+          <option
+            v-for="sector in DerivacionInternaGET.sectoresDestino"
+            :key="sector.guardiaSectorId"
+            :value="sector.guardiaSectorId"
+          >
+            {{ sector.nombre }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-2">Médico guardia:</label>
+        <select
+          v-model="guardiaSectorHastaId"
+          class="w-full border p-2 rounded disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
+        >
+          <option
+            v-for="prestador in DerivacionInternaGET.prestadores"
+            :key="prestador"
+            :value="prestador.value"
+          >
+            {{ prestador.text }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-2">Fecha de derivación:</label>
+        <input type="datetime-local" class="w-full border p-2 rounded" />
+      </div>
+    </form>
+    <div class="flex justify-end">
+      <button
+        class="px-4 py-2 rounded bg-blue-600 text-white"
+        @click="((modal = false), DerivacionInternaPost())"
+      >
+        Derivar
+      </button>
+    </div>
+  </ModalDerivar>
 </template>
 
 <script setup>
 import DiagnosticoSearch from '../components/Guardia/DiagnosticoSearch.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import Navigation from '@/components/NavBar.vue'
+import ModalDerivar from '@/components/Guardia/ModalDerivar.vue'
+import axiosFunction from '@/Functions/axios'
+import { useDatosGuardiaStore } from '@/stores/DatosGuardia'
+
+const datosGuardiaStore = useDatosGuardiaStore()
 
 // Variables reactivas y de estado
 const route = useRoute()
 const pacienteId = route.params.pacienteId
+const modal = ref(false)
+const GuardiaRegistroId = route.params.GuardiaRegistroId
+let DerivacionInternaGET = ref({})
+
+const DerivacionInternaDto = reactive({
+  guardiaRegistroId: null,
+  guardiaSectorDesdeId: null,
+  guardiaSectorHastaId: null,
+  guardiaCamaId: null,
+  prestadorId: null,
+})
+
+const ParametrosDerivacionInterna = reactive({
+  derivaOtraCama: 0,
+  usuario: null,
+  prestadorIdSeleccionado: null,
+})
+let guardiaSectorHastaId = ref(null) // Este es el v-model del select
 
 const paciente = ref(null)
 const cargando = ref(true)
@@ -129,6 +219,10 @@ onMounted(async () => {
   } finally {
     cargando.value = false
   }
+  console.log(
+    'GuardiaRegistroID del paciente actual (persistido): ',
+    datosGuardiaStore.GuardiaRegistroID,
+  )
 })
 
 // Métodos
@@ -196,6 +290,52 @@ async function guardarConsulta(isAlert = false) {
     console.error('Error al guardar consulta:', error)
     alert('Error al guardar consulta')
   }
+}
+
+function DerivacionInternaGet() {
+  // Trae los datos para llenar el formulario de derivación
+  let usuarioID = datosGuardiaStore.InformacionUsuario.userName
+  axiosFunction
+    .get(`Guardia/DerivacionInternaGet/${GuardiaRegistroId}/${usuarioID}`)
+    .then((resultado) => {
+      DerivacionInternaGET.value = resultado.data
+
+      DerivacionInternaDto.guardiaRegistroId = datosGuardiaStore.GuardiaRegistroID
+      DerivacionInternaDto.guardiaSectorDesdeId = parseInt(datosGuardiaStore.GuardiaSectorID)
+      DerivacionInternaDto.guardiaSectorHastaId = 0
+      // DerivacionInternaDto.guardiaCamaId = 0
+      DerivacionInternaDto.prestadorId = parseInt(resultado.data.prestadorIdUsuarioActual) ?? null
+
+      ParametrosDerivacionInterna.usuario = usuarioID
+      ParametrosDerivacionInterna.prestadorIdSeleccionado = parseInt(resultado.data.prestadorIdUsuarioActual) ?? null
+
+      let prestadorPorDefecto =
+        resultado.data.prestadorIdUsuarioActual == null
+          ? null
+          : resultado.data.prestadorIdUsuarioActual
+
+      guardiaSectorHastaId.value = prestadorPorDefecto // Preselecciona el recomendado
+    })
+    .catch((error) => {
+      console.log('Error al traer las derivaciones: ', error)
+    })
+}
+
+function DerivacionInternaPost() {
+  // Envía los datos del formulario de derivación
+  console.log('Datos a enviar:', DerivacionInternaDto, ParametrosDerivacionInterna)
+  axiosFunction.post('Guardia/create', DerivacionInternaDto,
+  {
+    params: ParametrosDerivacionInterna
+  })
+    .then((resultado) => {
+      console.log('Derivación realizada con éxito:', resultado.data)
+      alert('Derivación realizada con éxito')
+    })
+    .catch((error) => {
+      console.log('Error al realizar la derivación: ', error)
+      alert('Error al realizar la derivación')
+    })
 }
 </script>
 

@@ -58,6 +58,9 @@ import PatientSearch from '@/components/PlantillaTabla.vue'
 import RightPanel from '@/components/Guardia/SideBarPaciente.vue'
 import { ref, onMounted, computed } from 'vue'
 import axiosFunction from '@/Functions/axios'
+import { useDatosGuardiaStore } from '@/stores/DatosGuardia'
+
+const datosGuardiaStore = useDatosGuardiaStore()
 
 let listaPacientes = ref([])
 let sectorConsulta = ref()
@@ -75,10 +78,10 @@ const listaPacientesFiltrados = computed(() => {
 })
 
 onMounted(() => {
-  // const pathParts = window.location.pathname.split('/').filter(Boolean)
-  // const idSectorGuardia = pathParts[pathParts.length - 1]
-  // console.log('ID del sector de guardia:', idSectorGuardia)
-  listarPacientes(38)
+  const pathParts = window.location.pathname.split('/').filter(Boolean)
+  const idSectorGuardia = pathParts[pathParts.length - 2]
+  console.log('ID del sector de guardia:', idSectorGuardia)
+  listarPacientes(idSectorGuardia)
 })
 
 function listarPacientes(id) {
@@ -99,6 +102,7 @@ function selectPatient(id) {
   if (!IsShowRightPanel.value) {
     IsShowRightPanel.value = true
   }
+  datosGuardiaStore.SeleccionarGuardiaRegistroIdPaciente(id)
 }
 </script>
 

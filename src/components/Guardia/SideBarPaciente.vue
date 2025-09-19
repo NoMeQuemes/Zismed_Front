@@ -23,7 +23,10 @@
               <span class="bg-gray-100 text-gray-800 px-2 py-1 text-xs font-medium rounded">UDI</span>
             </div> -->
           </div>
-          <div class="text-sm text-gray-600">Edad: {{ $calcularEdad(informacionPaciente.pacienteFechaNacimiento) }} a Obra soc: OSDE Llegada: 2025-09-05</div>
+          <div class="text-sm text-gray-600">
+            Edad: {{ $calcularEdad(informacionPaciente.pacienteFechaNacimiento) }} a Obra soc: OSDE
+            Llegada: 2025-09-05
+          </div>
         </div>
         <div class="mb-6">
           <div class="mb-2 flex gap-4">
@@ -34,12 +37,17 @@
         </div>
         <div class="mb-8 flex gap-2">
           <router-link
-            :to="{ name: 'CreateConsulta', params: { pacienteId: informacionPaciente.pacienteID } }"
+            :to="{
+              name: 'CreateConsulta',
+              params: {
+                pacienteId: informacionPaciente.pacienteID,
+                GuardiaRegistroId: props.registroId,
+              },
+            }"
           >
             <button
               type="submit"
               class="flex-1 hover:bg-blue-600 rounded bg-blue-500 text-white px-3 py-1 font-small"
-              @click="evolucionarPaciente(informacionPaciente.pacienteID)"
             >
               Evolucionar ahora
             </button>
@@ -50,10 +58,18 @@
           >
             Indicaciones rápidas
           </button>
+          <router-link :to="{ name: 'HistoriaClinica', params: { guardiaRegistroId: registroId } }">
+            <button
+              type="submit"
+              class="hover:bg-gray-600 rounded bg-gray-500 text-white px-3 py-1 font-small"
+            >
+              Historia clínica
+            </button>
+          </router-link>
         </div>
 
         <!-- Time line de consultas dinámica -->
-        <div class="space-y-6" style="max-height: 43vh; overflow-y: auto">
+        <div class="space-y-6" style="max-height: 56vh; overflow-y: auto">
           <div class="flex" v-for="consulta in consultasPaciente" :key="consulta.consultaId">
             <div class="items-center mr-4 flex flex-col">
               <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
@@ -95,7 +111,7 @@ const props = defineProps({
     type: Boolean,
     required: true,
     default: false,
-  }
+  },
 })
 
 function traerInformacionPaciente() {
@@ -113,11 +129,9 @@ function traerInformacionPaciente() {
     .then((resultado) => {
       //Toda la información que viene del paciente
       informacionPaciente.value = resultado.data
-      console.log('Información del paciente: ', informacionPaciente.value)
 
       //Todas las consultas
       consultasPaciente.value = resultado.data.result
-      console.log('Consultas del paciente: ', consultasPaciente.value)
       IsLoading.value = false
     })
     .catch((error) => {

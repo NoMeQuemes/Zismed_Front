@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import index from '@/views/IndexGuardiaView.vue'
+import HistoriaClinicaView from '@/views/HistoriaClinicaView.vue'
 
 // Detecta automáticamente la base según la URL actual del navegador
 function getBasePath() {
@@ -20,9 +21,14 @@ const router = createRouter({
       component: index,
     },
     {
-      path: '/CreateConsulta/:pacienteId',
+      path: '/CreateConsulta/:pacienteId/:GuardiaRegistroId',
       name: 'CreateConsulta',
       component: () => import('../views/EvolucionGuardiaView.vue'),
+    },
+    {
+      path: '/HistoriaClinica/:guardiaRegistroId',
+      name: 'HistoriaClinica',
+      component: HistoriaClinicaView,
     },
   ],
 })

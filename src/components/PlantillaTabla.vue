@@ -9,7 +9,7 @@
         class="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full px-4 py-2 rounded-lg bg-white text-gray-900"
       />
     </div>
-    <div class="bg-white rounded-lg shadow" style="max-height: 70vh; overflow-y: auto">
+    <div class="bg-white rounded-lg shadow" style="max-height: 75vh; overflow-y: auto">
       <table class="min-w-full text-sm text-gray-900 patient-table">
         <thead class="bg-gray-50 text-gray-700">
           <tr>
